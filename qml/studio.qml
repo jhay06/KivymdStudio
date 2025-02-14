@@ -453,12 +453,14 @@ ApplicationWindow {
                 anchors.fill: parent
                 bscolor:parent.color
                 onFileSelected:{
-                    //console.log(file,'11111111')
+                    console.log(file,'11111111')
                     var tx=backend.openfile(file)
                     cde=tx
                     lnk=file.toString()
                     var tl=backend.get_filename(file)
+                    console.log(codetab.currentIndex)
                     if(codetab.contains(tl)==true){
+                        console.log("??")
                         let idx=codetab.indexOf(tl)
                         if(codetab.currentIndex>idx){
                             codetab.currentIndex-=codetab.currentIndex-idx
@@ -468,12 +470,24 @@ ApplicationWindow {
                             //nothings!
                         }
                     }else{
+                        var nextIndex = 0
+                        if(codetab.count > 0){
+                            if(codetab.currentIndex > codetab.count){
+                                console.log("HERE")
+                                nextIndex = codetab.count -1
+                            }else{
+                                nextIndex = codetab.currentIndex + 1
+                            }
+                        } 
                         if (tl.substr(-4,4)=='.png' ||tl.substr(-4,4)=='.PNG' ||tl.substr(-4,4)=='.jpg' ||tl.substr(-4,4)=='.JPG' ||tl.substr(-5,5)=='.jpeg' ||tl.substr(-5,5)=='.JPEG' ||tl.substr(-4,4)=='.svg' ||tl.substr(-5,5)=='.webp' ||tl.substr(-5,5)=='.WEBP'){
                             imsource=file
-                            codetab.insertTab(codetab.currentIndex+1,tl,imcomp)
+                            codetab.insertTab(nextIndex,tl,imcomp)
                         }else{
-                            codetab.insertTab(codetab.currentIndex+1,tl,cb)
+                            codetab.insertTab(nextIndex,tl,cb)
+                             
                         }
+                        codetab.currentIndex = nextIndex
+                    
                     }
                     //codetab.getTab(codetab.currentIndex+1).visible=true
                 }
@@ -1667,7 +1681,7 @@ ApplicationWindow {
                 frame: Rectangle { color: root.color ; clip:true}
                 tabsMovable: true
             }
-            
+           
             Tab{
                 title: 'Wellcome'
                 active: true

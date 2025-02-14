@@ -5,17 +5,30 @@ from rope.base import libutils
 import simplejson as Json
 
 def newProject(name,path,template='',add_temp=True,license=True,env=False,git=False,project_type='kv'):
+    #check if path ends with /
+    if template == '':
+        template='Empty'
+
+    if not path.endswith('/'):
+        path+='/'
+    if path.startswith('file://'):
+        path=path.replace('file://','')
     if project_type in ('kv','pykv'):
+        print('creating kv project' )
+        print((name,path,template,add_temp,license,env,git,project_type))
         if project_type=='kv':return create_kv_project(name,path,template,license,env,git)
         else:return create_pykv_project(name,path,template,license,env,git)
     else:
+        print('create complete project')
         return create_py_project(name,path,license,env,git)
 
     # venv.create(path,with_pip=False,)
     # os.makedirs(f'{path}/{name}')
-    
+
 def create_py_project(n,p,l,e,g):
+    print(p+n)
     if not os.path.exists(p+n):
+        print('creating prooject')
         os.makedirs(p+n)
         os.makedirs(p+n+'/lib/')
         os.makedirs(p+n+'/assets/icons/')
@@ -38,15 +51,20 @@ def create_py_project(n,p,l,e,g):
     return p+n
 
 def create_kv_project(n,p,t,l,e,g):
+    print(p+n)
+    print('path exists ',os.path.exists(p+n))
     if not os.path.exists(p+n):
         import utils
+        print('creating dirs')
         os.makedirs(p+n)
         os.makedirs(p+n+'/kvs/')
+
         os.makedirs(p+n+'/assets/icons/')
         os.makedirs(p+n+'/assets/images/')
         os.makedirs(p+n+'/assets/fonts/')
         with open(p+n+'/main.kv','x') as f:
-            code=f'''# This File was generated automatically by KivymdStudio\n#:import hex kivy.utils.get_color_from_hex\n{utils.TEMPLATES[t]}'''
+            print('writing')
+            code="#This File was generated automatically by KivymdStudio\n#:import hex kivy.utils.get_color_from_hex\n"+utils.TEMPLATES[t]
             f.write(code)
         if l:
             shutil.copyfile('assets/LICENSE',p+n+'/LICENSE')
@@ -54,7 +72,7 @@ def create_kv_project(n,p,t,l,e,g):
             shutil.copyfile('.gitignore',p+n+'/.gitignore')
 
         proj=Project(p+n,ropefolder='.KvStudio')
-        with open(p+n+'.KvStudio/emulator.json','x') as f:
+        with open(p+n+'/.KvStudio/emulator.json','x') as f:
             conf={
                 'App_name':n,
                 'primary_color':'blue',
@@ -63,7 +81,7 @@ def create_kv_project(n,p,t,l,e,g):
                 'assets':p+n+'/assets'
             }
             f.write(Json.dumps(conf,indent=4))
-        with open(p+n+'.KvStudio/editor.json','x') as f:
+        with open(p+n+'/.KvStudio/editor.json','x') as f:
             conf={
                 'tab_size':8,
                 'project_path':p+n,

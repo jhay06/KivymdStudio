@@ -486,15 +486,17 @@ class Studio(QObject):
     def run(self):
 
         app = QGuiApplication(sys.argv)
+        
         #QQuickStyle.setStyle("Material")
         engine = QQmlApplicationEngine()
+        engine.rootContext().setContextProperty('backend',self)
         #qmlRegisterType(FolderTree,'DotPy.Core' , 1, 0, 'Terminal')
         studio=Studio()
         cmder=CommandManager()
         editor=EditorManager()
         filemanager=FileManager()
         stack=StackManager()
-        engine.rootContext().setContextProperty('backend',studio)
+      
         engine.rootContext().setContextProperty('CommandManager',cmder)
         engine.rootContext().setContextProperty('EditorManager',editor)
         engine.rootContext().setContextProperty('FileManagerBackend',filemanager)
